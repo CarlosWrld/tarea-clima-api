@@ -23,6 +23,19 @@ app.post(
   }
 );
 
+app.post(
+  '/api/registro',
+  body('nombre').notEmpty().withMessage('El nombre no debe estar vacío').trim().escape(),
+  body('correo').isEmail().withMessage('El correo debe tener un formato válido').normalizeEmail(),
+  (req, res) => {
+    const errores = validationResult(req);
+    if (!errores.isEmpty()) {
+      return res.status(400).json({ errores: errores.array() });
+    }
+    res.status(201).json({ mensaje: 'Registro exitoso', datos: req.body });
+  }
+);
+
 app.get('/api/salud', (req, res) => {
   res.json({ status: 'ok' });
 });
